@@ -49,3 +49,5 @@ define('PERMITTED_IMAGE_TYPES', array(
   IMAGETYPE_JPEG => 'jpg',
   IMAGETYPE_PNG => 'png',
 ));
+
+define('HTML_CHARACTER_SET', 'UTF-8');  // HTML文字エンコーディング
