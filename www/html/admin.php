@@ -19,4 +19,5 @@ if(is_admin($user) === false){
 }
 
 $items = get_all_items($db);
+
 include_once VIEW_PATH . '/admin_view.php';
