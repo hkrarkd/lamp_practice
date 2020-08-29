@@ -6,6 +6,18 @@ require_once MODEL_PATH . 'item.php';
 
 session_start();
 
+// 送信されたトークンを変数に代入
+$token = get_post('csrf_token');
+
+// 送信されたトークンとセッションに保存のトークンが一致しない場合不正なリクエストとして扱う。
+if(is_valid_csrf_token($token) === FALSE) {
+  set_error('不正なリクエストです。');
+  redirect_to(ADMIN_URL);
+}
+
+// トークンを破棄
+unset($_SESSION['csrf_token']);
+
 if(is_logined() === false){
   redirect_to(LOGIN_URL);
 }
