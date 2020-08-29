@@ -139,3 +139,23 @@ function h($str) {
  
   return htmlspecialchars($str, ENT_QUOTES, HTML_CHARACTER_SET);
 }
+
+// トークンを生成
+function get_csrf_token() {
+  // ランダムな文字列を取得
+  $token = (string)mt_rand();
+  // セッションに保存
+  set_session('csrf_token', $token);
+  return $token;
+  }
+
+// トークンのチェック
+function is_valid_csrf_token($token) {
+  // トークンが未設定の場合
+  if($token === '') {
+  // 返値：false
+  return false;
+  }
+  // 返値：送信されたトークンとセッションに保存のトークンを比較
+  return $token === get_session('csrf_token');
+}
