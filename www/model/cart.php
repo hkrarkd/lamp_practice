@@ -1,6 +1,8 @@
 <?php 
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
+require_once MODEL_PATH . 'order.php';
+require_once MODEL_PATH . 'history.php';
 
 function get_user_carts($db, $user_id){
   $sql = "
@@ -113,21 +115,16 @@ function delete_cart($db, $cart_id){
   return execute_query($db, $sql, $params);
 }
 
-function purchase_carts($db, $carts){
+function purchase_carts($db, $carts, $user_id){
+  // カート内商品のエラーチェック
   if(validate_cart_purchase($carts) === false){
     return false;
   }
-  foreach($carts as $cart){
-    if(update_item_stock(
-        $db, 
-        $cart['item_id'], 
-        $cart['stock'] - $cart['amount']
-      ) === false){
-      set_error($cart['name'] . 'の購入に失敗しました。');
-    }
+  // 購入時のテーブル更新
+  if(update_item_history($db, $user_id, $carts) === false){
+    return false;
   }
-  
-  delete_user_carts($db, $carts[0]['user_id']);
+  return true;
 }
 
 function delete_user_carts($db, $user_id){
@@ -171,3 +168,35 @@ function validate_cart_purchase($carts){
   return true;
 }
 
+function update_item_history($db, $user_id, $carts){
+  // トランザクション開始
+  $db->beginTransaction();
+  // 注文番号テーブルにデータを保存
+  insert_order($db, $user_id);
+  // 注文番号を取得
+  $order_id = $db->lastInsertId();
+  // 商品テーブルの在庫をチェック＆更新
+  foreach($carts as $cart){
+    if(update_item_stock(
+        $db, 
+        $cart['item_id'], 
+        $cart['stock'] - $cart['amount']
+      ) === false){
+      set_error($cart['name'] . 'の購入に失敗しました。');
+    }
+    // 注文履歴テーブルにデータを保存
+    insert_history($db, $cart['item_id'], $order_id, $cart['amount'], $cart['price']);
+  }
+  // エラーが有ればロールバック処理
+  if(has_error() === true){
+    $db->rollback();
+    // 返り値：false
+    return false;
+  }
+  // コミット処理
+  $db->commit();
+  // カート情報を削除
+  delete_user_carts($db, $carts[0]['user_id']);
+  // 返り値：true
+  return true;
+}
