@@ -24,7 +24,7 @@ function get_item($db, $item_id){
   return fetch_query($db, $sql, $params);
 }
 
-function get_items($db, $is_open = false){
+function get_items($db, $is_open = false, $in_order = ''){
   $sql = '
     SELECT
       item_id, 
@@ -32,13 +32,30 @@ function get_items($db, $is_open = false){
       stock,
       price,
       image,
-      status
+      status,
+      created
     FROM
       items
   ';
   if($is_open === true){
     $sql .= '
       WHERE status = 1
+    ';
+  }
+  if($in_order === '' || $in_order === '新着順'){
+    $sql .= '
+      ORDER BY
+        created DESC
+    ';
+  } elseif ($in_order === '安い順') {
+    $sql .= '
+      ORDER BY
+        price
+    ';
+  } elseif ($in_order === '高い順') {
+    $sql .= '
+      ORDER BY
+        price DESC
     ';
   }
 
@@ -51,6 +68,10 @@ function get_all_items($db){
 
 function get_open_items($db){
   return get_items($db, true);
+}
+
+function get_open_items_inOrder($db, $in_order){
+  return get_items($db, true, $in_order);
 }
 
 function regist_item($db, $name, $price, $stock, $status, $image){
