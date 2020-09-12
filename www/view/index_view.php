@@ -11,6 +11,17 @@
   
 
   <div class="container">
+
+  <!-- 商品の並び替え機能 -->
+  <form action="index.php" method="get" class="text-right">
+    <select name="in_order">
+      <option value="新着順" <?php if($in_order === '' || $in_order === '新着順') {echo 'selected';} ?> >新着順</option>
+      <option value="安い順" <?php if($in_order === '安い順') {echo 'selected';} ?> >価格の安い順</option>
+      <option value="高い順" <?php if($in_order === '高い順') {echo 'selected';} ?> >価格の高い順</option>
+    </select>
+    <input type="submit" value="並び替え">
+  </form>
+
     <h1>商品一覧</h1>
     <?php include VIEW_PATH . 'templates/messages.php'; ?>
 
