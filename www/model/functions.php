@@ -11,9 +11,12 @@ function redirect_to($url){
 }
 
 function get_get($name){
+  // $_GET[$name]がセットされている場合
   if(isset($_GET[$name]) === true){
+    // 返り値は$_GET[$name]
     return $_GET[$name];
   };
+  // 返り値は空
   return '';
 }
 
@@ -32,9 +35,12 @@ function get_file($name){
 }
 
 function get_session($name){
+  // $_SESSION[$name]に値がセットされている場合
   if(isset($_SESSION[$name]) === true){
+    // 返り値は$_SESSION[$name]
     return $_SESSION[$name];
   };
+  // 返り値は空
   return '';
 }
 
@@ -47,11 +53,16 @@ function set_error($error){
 }
 
 function get_errors(){
+  // get_session('__errors')の返り値を$errors変数に代入
   $errors = get_session('__errors');
+  // $errorsの値が空の場合
   if($errors === ''){
+    // 返り値は空の配列
     return array();
   }
+  // $_SESSION['__errors']に空の配列をセットすることで初期化
   set_session('__errors',  array());
+  // 返り値は$errors
   return $errors;
 }
 
@@ -64,14 +75,20 @@ function set_message($message){
 }
 
 function get_messages(){
+  // get_session('__messages')の返り値を$messages変数に代入
   $messages = get_session('__messages');
+  // $messagesが空の場合
   if($messages === ''){
+    // 返り値は空の配列
     return array();
   }
+  // $_SESSION['__messages']に空の配列をセットすることで初期化
   set_session('__messages',  array());
+  // 返り値は$messages
   return $messages;
 }
 
+// ログインチェック
 function is_logined(){
   return get_session('user_id') !== '';
 }

@@ -25,6 +25,7 @@ function get_item($db, $item_id){
 }
 
 function get_items($db, $is_open = false, $in_order = ''){
+  // sql文　SELECT=取得するカラムを選択　FROM=テーブルを選択
   $sql = '
     SELECT
       item_id, 
@@ -37,28 +38,39 @@ function get_items($db, $is_open = false, $in_order = ''){
     FROM
       items
   ';
+  // $is_openの値がtrueの場合
   if($is_open === true){
+    // sql文　WHERE=条件を設定（statusカラムが1）
     $sql .= '
       WHERE status = 1
     ';
   }
+  // $in_orderの値が空or新着順の場合
   if($in_order === '' || $in_order === '新着順'){
+    // sql文　ORDER BY=並び替え（createdカラムについて降順）
     $sql .= '
       ORDER BY
         created DESC
     ';
-  } elseif ($in_order === '安い順') {
+  } 
+  // $in_orderの値が安い順の場合
+  elseif ($in_order === '安い順') {
+    // sql文　ORDER BY=並び替え（priceカラムについて昇順）
     $sql .= '
       ORDER BY
         price
     ';
-  } elseif ($in_order === '高い順') {
+  } 
+  // $in_orderの値が高い順の場合
+  elseif ($in_order === '高い順') {
+    // sql文　ORDER BY=並び替え（priceカラムについて降順）
     $sql .= '
       ORDER BY
         price DESC
     ';
   }
 
+  // 返り値
   return fetch_all_query($db, $sql);
 }
 
@@ -71,6 +83,7 @@ function get_open_items($db){
 }
 
 function get_open_items_inOrder($db, $in_order){
+  // 返り値
   return get_items($db, true, $in_order);
 }
 
