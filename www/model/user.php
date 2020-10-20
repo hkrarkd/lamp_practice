@@ -3,6 +3,7 @@ require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
 function get_user($db, $user_id){
+  // sql文　SELECT=取得するカラムを選択　FROM=テーブルを選択　WHERE=条件を設定　LIMIT=
   $sql = "
     SELECT
       user_id, 
@@ -16,8 +17,10 @@ function get_user($db, $user_id){
     LIMIT 1
   ";
 
+  // :user_idの値を$user_idとして指定し、$params変数に配列として代入
   $params = [':user_id' => $user_id];
 
+  // 返り値
   return fetch_query($db, $sql, $params);
 }
 
@@ -50,8 +53,9 @@ function login_as($db, $name, $password){
 }
 
 function get_login_user($db){
+  // get_session('user_id')の返り値を$login_user_id変数に代入
   $login_user_id = get_session('user_id');
-
+  // 返り値
   return get_user($db, $login_user_id);
 }
 
