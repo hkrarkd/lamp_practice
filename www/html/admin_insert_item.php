@@ -37,6 +37,7 @@ $stock = get_post('stock');
 
 $image = get_file('image');
 
+// 商品登録処理
 if(regist_item($db, $name, $price, $stock, $status, $image)){
   set_message('商品を登録しました。');
 }else {

@@ -94,11 +94,15 @@ function is_logined(){
 }
 
 function get_upload_filename($file){
+  // バリデーション処理
   if(is_valid_upload_image($file) === false){
     return '';
   }
+  // 画像の形式を判別し、定数を返す（画像形式でなければfalseを返す）
   $mimetype = exif_imagetype($file['tmp_name']);
+  // 画像の拡張子を取得
   $ext = PERMITTED_IMAGE_TYPES[$mimetype];
+  // 乱数を取得
   return get_random_string() . '.' . $ext;
 }
 
@@ -107,6 +111,7 @@ function get_random_string($length = 20){
 }
 
 function save_image($image, $filename){
+  // アップロードされたファイルを指定ディレクトリに移動して保存
   return move_uploaded_file($image['tmp_name'], IMAGE_DIR . $filename);
 }
 
@@ -140,11 +145,14 @@ function is_valid_format($string, $format){
 
 
 function is_valid_upload_image($image){
+  // POSTでファイルがアップロードされたかチェック
   if(is_uploaded_file($image['tmp_name']) === false){
     set_error('ファイル形式が不正です。');
     return false;
   }
+  // 画像の形式を判別し、定数を返す（画像形式でなければfalseを返す）
   $mimetype = exif_imagetype($image['tmp_name']);
+  // 拡張子をチェック
   if( isset(PERMITTED_IMAGE_TYPES[$mimetype]) === false ){
     set_error('ファイル形式は' . implode('、', PERMITTED_IMAGE_TYPES) . 'のみ利用可能です。');
     return false;
