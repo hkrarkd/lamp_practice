@@ -88,10 +88,13 @@ function get_open_items_inOrder($db, $in_order){
 }
 
 function regist_item($db, $name, $price, $stock, $status, $image){
+  // 画像ファイル名を取得
   $filename = get_upload_filename($image);
+  // バリデーション処理
   if(validate_item($name, $price, $stock, $filename, $status) === false){
     return false;
   }
+  // 商品情報をデータベースに登録
   return regist_item_transaction($db, $name, $price, $stock, $status, $image, $filename);
 }
 
